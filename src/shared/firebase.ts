@@ -21,9 +21,12 @@ export const firebaseConfig = {
   appId:             import.meta.env.VITE_FIREBASE_APP_ID             ?? "",
 };
 
-export const app  = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
-export const db   = getFirestore(app);
+const hasFirebaseKeys = !!firebaseConfig.apiKey;
+
+export const app  = hasFirebaseKeys ? initializeApp(firebaseConfig) : null as any;
+export const auth = hasFirebaseKeys ? getAuth(app) : null as any;
+export const db   = hasFirebaseKeys ? getFirestore(app) : null as any;
+
 
 /**
  * Uncomment when ready to use Firebase. Until then a local mock store is
