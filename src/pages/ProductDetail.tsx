@@ -167,10 +167,10 @@ export function ProductDetail({ id }: { id: string }) {
             </div>
           </div>
 
-          <div className="mt-7 flex flex-wrap gap-3">
-            <Button onClick={addToCart} disabled={product.stock === 0}>Add to Cart</Button>
-            <Button variant="ink" onClick={buyNow} disabled={product.stock === 0}>Buy Now</Button>
-            <Button variant="outline" onClick={toggleWish}>
+          <div className="mt-7 flex flex-col sm:flex-row gap-3 w-full">
+            <Button onClick={addToCart} disabled={product.stock === 0} className="w-full sm:w-auto">Add to Cart</Button>
+            <Button variant="ink" onClick={buyNow} disabled={product.stock === 0} className="w-full sm:w-auto">Buy Now</Button>
+            <Button variant="outline" onClick={toggleWish} className="w-full sm:w-auto">
               {isWished ? "♥ Wishlisted" : "♡ Add to Wishlist"}
             </Button>
           </div>

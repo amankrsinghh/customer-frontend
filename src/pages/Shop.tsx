@@ -79,17 +79,17 @@ export function Shop() {
             </button>
           ))}
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 w-full sm:w-auto">
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search…"
-            className="w-44 rounded-full border border-ink/15 bg-white px-4 py-2 text-sm outline-none focus:border-rose-gold"
+            className="flex-1 sm:w-44 rounded-full border border-ink/15 bg-white px-4 py-2 text-sm outline-none focus:border-rose-gold"
           />
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value as "new" | "lo" | "hi")}
-            className="rounded-full border border-ink/15 bg-white px-4 py-2 text-sm outline-none focus:border-rose-gold"
+            className="flex-1 sm:w-auto rounded-full border border-ink/15 bg-white px-4 py-2 text-sm outline-none focus:border-rose-gold"
           >
             <option value="new">Newest</option>
             <option value="lo">Price: Low to High</option>

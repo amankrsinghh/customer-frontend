@@ -94,7 +94,7 @@ export function CustomerLayout({ children }: { children: ReactNode }) {
 
         {/* Mobile menu */}
         {open && (
-          <div className="border-t border-ink/5 lg:hidden">
+          <div className="border-t border-ink/5 lg:hidden fade-up">
             <div className="flex flex-col gap-4 px-6 py-5">
               <NavLink to="/" label="Home" />
               <NavLink to="/shop" label="Shop" />

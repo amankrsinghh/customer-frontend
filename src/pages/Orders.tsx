@@ -139,23 +139,54 @@ function TrackBar({ status }: { status: Order["orderStatus"] }) {
     return <div className="mt-5 rounded-lg bg-rose-50 p-3 text-center text-sm text-rose-700 font-medium">Returned & Refunded</div>;
   }
   const idx = steps.indexOf(status);
+  
   return (
-    <div className="mt-5">
-      <div className="flex items-center">
+    <div className="mt-6 border-t border-ink/5 pt-5">
+      {/* Mobile View: Vertical Timeline */}
+      <div className="md:hidden space-y-4">
         {steps.map((s, i) => (
-          <div key={s} className="flex flex-1 items-center">
-            <div className={"flex h-7 w-7 items-center justify-center rounded-full text-[10px] font-bold " +
-              (i <= idx ? "bg-rose-gold text-white" : "bg-ink/10 text-ink/40")}>
-              {i + 1}
+          <div key={s} className="flex items-center gap-3">
+            <div className="relative flex flex-col items-center">
+              <div className={"flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-bold z-10 " +
+                (i <= idx ? "bg-rose-gold text-white" : "bg-ink/10 text-ink/40")}>
+                {i + 1}
+              </div>
+              {i < steps.length - 1 && (
+                <div className={"absolute top-6 w-0.5 h-4 " + (i < idx ? "bg-rose-gold" : "bg-ink/10")} />
+              )}
             </div>
-            {i < steps.length - 1 && (
-              <div className={"mx-2 h-0.5 flex-1 " + (i < idx ? "bg-rose-gold" : "bg-ink/10")} />
-            )}
+            <div>
+              <span className={"text-xs uppercase tracking-wider font-medium " + (i <= idx ? "text-rose-gold-dark" : "text-ink/40")}>
+                {s}
+              </span>
+              {i === idx && (
+                <span className="ml-2 rounded-full bg-emerald-50 px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-wider text-emerald-700 animate-pulse">
+                  Active
+                </span>
+              )}
+            </div>
           </div>
         ))}
       </div>
-      <div className="mt-2 flex justify-between text-[10px] uppercase tracking-wider text-ink/60">
-        {steps.map((s) => <span key={s} className="flex-1 text-center">{s}</span>)}
+
+      {/* Desktop View: Horizontal Progress Bar */}
+      <div className="hidden md:block">
+        <div className="flex items-center">
+          {steps.map((s, i) => (
+            <div key={s} className="flex flex-1 items-center">
+              <div className={"flex h-7 w-7 items-center justify-center rounded-full text-[10px] font-bold " +
+                (i <= idx ? "bg-rose-gold text-white" : "bg-ink/10 text-ink/40")}>
+                {i + 1}
+              </div>
+              {i < steps.length - 1 && (
+                <div className={"mx-2 h-0.5 flex-1 " + (i < idx ? "bg-rose-gold" : "bg-ink/10")} />
+              )}
+            </div>
+          ))}
+        </div>
+        <div className="mt-2 flex justify-between text-[10px] uppercase tracking-wider text-ink/60">
+          {steps.map((s) => <span key={s} className="flex-1 text-center">{s}</span>)}
+        </div>
       </div>
     </div>
   );
