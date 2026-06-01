@@ -146,7 +146,7 @@ export function Contact() {
         <div className="rounded-2xl bg-white p-6 ring-1 ring-ink/5">
           <div className="text-3xl">📞</div>
           <div className="mt-3 font-serif text-xl">Call</div>
-          <div className="mt-1 text-sm text-ink/70">+91 98765 43210</div>
+          <div className="mt-1 text-sm text-ink/70">+91 80029 29778</div>
           <div className="text-xs text-ink/50">Mon–Sat, 10am–8pm</div>
         </div>
         <div className="rounded-2xl bg-white p-6 ring-1 ring-ink/5">

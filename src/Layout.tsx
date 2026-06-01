@@ -4,7 +4,7 @@ import { Link, useHashRoute } from "./shared/router";
 import { useAuth, signOut } from "./shared/auth";
 import { onCartChange, onWishlistChange } from "./shared/mockStore";
 
-const WHATSAPP_NUMBER = "919876543210"; // change to real one
+const WHATSAPP_NUMBER = "918002929778"; // real WhatsApp number
 
 export function CustomerLayout({ children }: { children: ReactNode }) {
   const { navigate, path } = useHashRoute();
