@@ -13,7 +13,8 @@ import type {
   CartItem,
   CategoryItem,
 } from "./types";
-import { firebaseConfig, db } from "./firebase";
+import { firebaseConfig, db, auth } from "./firebase";
+import { onAuthStateChanged } from "firebase/auth";
 import {
   collection,
   doc,
@@ -26,6 +27,8 @@ import {
 
 type Listener<T> = (data: T) => void;
 
+const allCollections: any[] = [];
+
 const isFirebaseEnabled = !!firebaseConfig.apiKey;
 
 class Collection<T> {
@@ -34,11 +37,15 @@ class Collection<T> {
   private fsColName: string;
   private listeners: Set<Listener<T[]>> = new Set();
   private inMemoryCache: T[] = [];
+  private unsubscribeFs: (() => void) | null = null;
 
   constructor(key: string, seed: T[] = [], idField: string = "id") {
     this.key = key;
     this.idField = idField;
     this.fsColName = key.replace("ccd_", "").replace(/_([a-z])/g, (g) => g[1].toUpperCase());
+
+    // Register collection instance
+    allCollections.push(this);
 
     // Always listen for cross-tab localStorage changes so admin updates
     // appear instantly on the customer tab (and vice versa)
@@ -55,19 +62,26 @@ class Collection<T> {
     }
   }
 
-  private async initFirestore(seed: T[]) {
-    // Initialize in-memory cache with seed data (acts as a starting point)
-    this.inMemoryCache = [...seed];
-
+  setupFirestoreListener() {
+    if (!isFirebaseEnabled) return;
     if (this.fsColName === "users") {
-      // Don't listen to the entire users collection (saves bandwidth and prevents security rules error)
       return;
+    }
+
+    // Unsubscribe from any existing listener first to avoid duplicates
+    if (this.unsubscribeFs) {
+      try {
+        this.unsubscribeFs();
+      } catch (err) {
+        console.warn(`Error unsubscribing Firestore listener for ${this.fsColName}:`, err);
+      }
+      this.unsubscribeFs = null;
     }
 
     const colRef = collection(db, this.fsColName);
 
     // Listen for real-time updates from Firestore
-    onSnapshot(colRef, (snapshot) => {
+    this.unsubscribeFs = onSnapshot(colRef, (snapshot) => {
       const list: T[] = [];
       snapshot.forEach((d) => {
         list.push({ [this.idField]: d.id, ...d.data() } as unknown as T);
@@ -89,10 +103,19 @@ class Collection<T> {
     }, (error) => {
       console.error(`Firestore error on collection ${this.fsColName}:`, error);
     });
+  }
+
+  private async initFirestore(seed: T[]) {
+    // Initialize in-memory cache with seed data (acts as a starting point)
+    this.inMemoryCache = [...seed];
+
+    // Setup the listener
+    this.setupFirestoreListener();
 
     // Seed data if Firestore is empty on first load (e.g. for products)
     if (this.fsColName === "products" && seed.length > 0) {
       try {
+        const colRef = collection(db, this.fsColName);
         const querySnapshot = await getDocs(colRef);
         if (querySnapshot.empty) {
           for (const item of seed) {
@@ -477,3 +500,12 @@ export async function placeOrder(o: Order): Promise<Order> {
 
 // Utility to make short ids
 export const uid = () => Math.random().toString(36).slice(2, 10).toUpperCase();
+
+// Re-establish Firestore listeners when the user authentication state changes
+if (isFirebaseEnabled && auth) {
+  onAuthStateChanged(auth, () => {
+    allCollections.forEach((col) => {
+      col.setupFirestoreListener();
+    });
+  });
+}
