@@ -36,10 +36,10 @@ export function CustomerLayout({ children }: { children: ReactNode }) {
   );
 
   return (
-    <div className="min-h-screen bg-cream">
+    <div className="min-h-screen bg-cream overflow-x-hidden">
       {/* Announcement bar */}
       <div className="bg-ink text-white">
-        <div className="mx-auto flex max-w-7xl items-center justify-center gap-2 px-4 py-2 text-[11px] uppercase tracking-[0.2em]">
+        <div className="mx-auto flex flex-wrap items-center justify-center gap-x-2 gap-y-1 px-4 py-2 text-center text-[10px] sm:text-[11px] uppercase tracking-[0.1em] sm:tracking-[0.2em]">
           <span>✦</span>
           <span>Free shipping on orders above ₹5,000 · Made-to-Measure Available</span>
           <span>✦</span>
